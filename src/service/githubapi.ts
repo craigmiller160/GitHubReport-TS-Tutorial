@@ -1,6 +1,7 @@
 import * as request from 'request';
 import {User} from '../model/user';
 import {Repo} from '../model/repo';
+import {Promise} from 'es6-promise';
 
 const OPTIONS: any = {
     headers: {
@@ -9,7 +10,7 @@ const OPTIONS: any = {
     json: true
 };
 
-export class GitHubApiService {
+export class GitHubApiService2 {
 
     getUserInfo(userName: string, callback: (user: User) => any){
         request.get(`https://api.github.com/users/${userName}`, OPTIONS, (error: any, res: any, body: any) => {
@@ -24,4 +25,35 @@ export class GitHubApiService {
             callback(repoArray);
         });
     }
+}
+
+export class GitHubApiService {
+
+    getUserInfo(userName: string){
+        return new Promise((resolve, reject) => {
+            request.get(`https://api.github.com/users/${userName}`, OPTIONS, (error: any, res: any, body: any) => {
+                if(error){
+                    reject(error);
+                }
+                else{
+                    resolve(new User(body));
+                }
+            });
+        });
+    }
+
+    getRepos(userName: string){
+        return new Promise((resolve, reject) => {
+            request.get(`https://api.github.com/users/${userName}/repos`, OPTIONS, (error: any, res: any, body: any) => {
+                let repoArray: Repo[] = body.map((repo: any) => new Repo(repo));
+                if(error){
+                    reject(error);
+                }
+                else{
+                    resolve(repoArray);
+                }
+            });
+        });
+    }
+
 }
