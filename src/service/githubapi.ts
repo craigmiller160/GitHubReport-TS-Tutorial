@@ -29,8 +29,8 @@ export class GitHubApiService2 {
 
 export class GitHubApiService {
 
-    getUserInfo(userName: string){
-        return new Promise((resolve, reject) => {
+    getUserInfo(userName: string): Promise<User>{
+        return new Promise<User>((resolve, reject) => {
             request.get(`https://api.github.com/users/${userName}`, OPTIONS, (error: any, res: any, body: any) => {
                 if(error){
                     reject(error);
@@ -42,8 +42,8 @@ export class GitHubApiService {
         });
     }
 
-    getRepos(userName: string){
-        return new Promise((resolve, reject) => {
+    getRepos(userName: string): Promise<Repo[]>{
+        return new Promise<Repo[]>((resolve, reject) => {
             request.get(`https://api.github.com/users/${userName}/repos`, OPTIONS, (error: any, res: any, body: any) => {
                 let repoArray: Repo[] = body.map((repo: any) => new Repo(repo));
                 if(error){
